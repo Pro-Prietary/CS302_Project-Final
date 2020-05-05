@@ -15,117 +15,129 @@ NJ Pelpinosas     	4/27/2020          1.0  Original version
 #include <fstream>
 #include <vector>
 #include <string>
-#include <boost/graph/adjacency_list.hpp>
+#include <algorithm>
 
-// Define datatypes, listS is a selector for the container used to represent the edge list for each
-// of the vertices. vecS is the selector for the conatainer used to represent the vertex list
-// of the graph.
-typedef boost::property<boost::edge_weight_t, int> EdgeWeightProperty;
-typedef boost::adjacency_list<boost::listS, boost::vecS, boost::bidirectionalS, boost::no_property, EdgeWeightProperty> Graph;
+#define VERTEX_AMOUNT 5
+#define BIG_NUMBER 100000000
 
+std::string cities[5] = {"Reno","San Francisco","Salt Lake City","Seattle","Las Vegas"};
 
-void addEdge(std::string city1, std::string city2, int miles, Graph graphite);
+int TSP( int graph[][VERTEX_AMOUNT], int start );
+
 /* -----------------------------------------------------------------------------
 FUNCTION:          
 DESCRIPTION:       
 RETURNS:           
 NOTES:             
 ------------------------------------------------------------------------------- */
-
 int main(void)
 {
-	std::string city1, city2, fcity, ncity;
-	int miles;
-
-	// Open up the file
-	std::fstream inFile;
-	inFile.open("mileInput.txt", std::ios::in);
-	if (!inFile)
-	{
-		std::cout << "\nError Opening File.\n\n";
-	}
-
+	int start = 0;
+	/* Create adjacency_matrix */
+	int adjacency_matrix[][VERTEX_AMOUNT] = { { 0, 218, 518, 704, 439 },
+	                                          { 218, 0, BIG_NUMBER, 808, 569},
+	                                          { 518, BIG_NUMBER, 0, 830, 421 },
+	                                          { 704, 808, 830, 0, BIG_NUMBER },
+	                                          { 439, 569, 421, BIG_NUMBER, 0 } };
 	
-	// Instantiate a Graph object named graphite
-	Graph graphite(5);
-
-
-	// Read in cities and miles into vectors and create edges
-	while (inFile >> city1)
-	{
-		std::cin >> city2;
-		std::cin >> miles;
-		addEdge(city1, city2, miles, graphite);
-	}
-
-
-
-
-	//boost::dijkstra_shortest_paths( graphite, kkkkkkkk) // eh, i'll commit and get to it laater
-
+	int the_chosen_one = TSP( adjacency_matrix, start );
+	std::cout << the_chosen_one << " miles travelled" << std::endl;
+    std::cout << the_chosen_one / 40 << " gallons used" << std::endl;
+	
+// 	std::string city1, city2;
+// 	int miles;
+// 	int cityIndex = 0;
+// // 	/* Open up the file */
+// 	std::fstream inFile;
+// 	inFile.open("mileInput.txt", std::ios::in);
+// 	if (!inFile)
+// 	{
+// 		std::cout << "\nError Opening File.\n\n";
+// 	}
+// 	/* Open up the file - end */
+// 
+// 	Read in cities and miles into vectors and create edges
+// 	while (inFile >> city1)
+// 	{
+// 		inFile >> city2;
+// 		inFile >> miles;
+// 		addEdge(city1, city2, miles, graphite);
+// 	}
+	
 	return 0;
 }
 
-/* -----------------------------------------------------------------------------
-FUNCTION:          
-DESCRIPTION:       
-RETURNS:           
-NOTES:             
-------------------------------------------------------------------------------- */
-void addEdge(std::string city1, std::string city2, int miles, Graph graphite)
+int TSP( int graph[][VERTEX_AMOUNT], int start )
 {
-	std::string Reno, San_Francisco, Salt_Lake_City, Seattle, Las_Vegas;
-	int reno = 0;
-	int sf = 1;
-	int slc = 2;
-	int sea = 3;
-	int lv = 4;
-
-	if ((city1 == Reno) && (city2 == San_Francisco))
+	std::string path[VERTEX_AMOUNT];
+	std::string path_best[VERTEX_AMOUNT];
+	std::vector<int> vertex;
+	
+	/* store vertexes except for the
+	 *first one, which represents Reno */
+	for( int n = 1; n != VERTEX_AMOUNT; n++ )
 	{
-		// Add weight edges to graphite
-		// integers located in each line are the distances between the cities
-		boost::add_edge(reno, sf, miles, graphite);
-	}
-
-	else if ((city1 == Reno) && (city2 == Salt_Lake_City))
-	{
-		boost::add_edge(reno, slc, miles, graphite);
-	}
-
-	else if ((city1 == Reno) && (city2 == Seattle))
-	{
-		boost::add_edge(reno, sea, miles, graphite);
-	}
-
-	else if ((city1 == Reno) && (city2 == Las_Vegas))
-	{
-		boost::add_edge(reno, lv, miles, graphite);
-	}
-
-	else if ((city1 == San_Francisco) && (city2 == Seattle))
-	{
-		boost::add_edge(sf, sea, miles, graphite);
-	}
-
-	else if ((city1 == San_Francisco) && (city2 == Las_Vegas))
-	{
-		boost::add_edge(sf, lv, miles, graphite);
-	}
-
-	else if ((city1 == San_Francisco) && (city2 == Seattle))
-	{
-		boost::add_edge(slc, sea, miles, graphite);
-	}
-
-	else if ((city1 == Salt_Lake_City) && (city2 == Las_Vegas))
-	{
-		boost::add_edge(slc, lv, miles, graphite);
-	}
-
-	else
-	{
-		std::cout << std::endl;
+		vertex.push_back(n);
 	}
 	
+	int minimum_path = BIG_NUMBER;
+	
+	std::cout << "Paths: " << std::endl;
+	
+	do
+	{
+		/* store the amount of miles travelled */
+		int miles = 0; // start off at Reno
+		
+		// current path weight compute
+		// check to see if this works later
+		int k = start;
+		
+		for( long unsigned int n = 0; n < vertex.size(); n++ )
+		{
+			miles += graph[k][vertex[n]];
+			k = vertex[n];
+			path[n] = cities[k];
+		}
+		
+		miles += graph[k][start];
+		minimum_path = std::min(minimum_path, miles);
+		
+		if( miles < BIG_NUMBER )
+		{
+			std::cout << "Reno -> ";
+			
+			for ( int n = 0; n < 4; n++ )
+			{
+				std::cout << path[n] << " -> ";
+			}
+			
+			std::cout << "Reno";
+			
+			std::cout << ": " << miles << " miles" << std::endl;
+			
+			if (miles == minimum_path)
+			{
+				
+				for (int i = 0; i < 4; i++)
+				{
+					path_best[i] = path[i];
+				}
+				
+			}
+		}
+		
+	} while( std::next_permutation( vertex.begin(), vertex.end() ) ); // check every possible combination
+	
+	std::cout << std::endl;
+	
+	std::cout << "Shortest Path = Reno -> ";
+    for (int n = 0; n < 4; n++)
+	{
+		std::cout << path_best[n] << " -> ";
+	}
+	std::cout << "Reno" << std::endl;
+	
+	/* return minimum path */
+    return minimum_path;
 }
