@@ -15,41 +15,30 @@ NJ Pelpinosas     	4/27/2020          1.0  Original version
 #include <fstream>
 #include <vector>
 #include <string>
-#include <array>
-#include <utility>
-#include <boost/graph/adjacency_list.hpp>
-#include <boost/graph/dijkstra_shortest_paths.hpp>
-#include <boost/graph/graph_traits.hpp>
-#include <boost/property_map/property_map.hpp>
-#include <boost/array.hpp>
-#include <boost/graph/named_function_params.hpp>
+#include <algorithm>
 
-// Define datatypes, listS is a selector for the container used to represent the edge list for each
-// of the vertices. vecS is the selector for the conatainer used to represent the vertex list
-// of the graph.
-typedef boost::property<boost::edge_weight_t, int> EdgeWeightProperty;
-typedef boost::adjacency_list<boost::listS, boost::vecS, boost::bidirectionalS, boost::no_property, EdgeWeightProperty> Graph;
-typedef boost::graph_traits<Graph>::vertex_descriptor vDescriptor;
-
-// Global Enum
-enum {reno, sf, slc, sea, lv, SIZE};
-
+// Global Variables
+#define VERTEX_AMOUNT 5
+#define BIG_NUMBER 100000000
+enum cities {Reno, San_Francisco, Salt_Lake_City, Seattle, Las_Vegas};
+std::string cities[5] = {"Reno","San Francisco","Salt Lake City","Seattle","Las Vegas"};
 
 // Prototypes
-void addEdge(std::string city1, std::string city2, int miles, Graph& graphite);
+void addEdge(std::string city1, std::string city2, int miles, int adjacency_matrix[][VERTEX_AMOUNT]);
+int TSP( int graph[][VERTEX_AMOUNT], int start );
 /* -----------------------------------------------------------------------------
 FUNCTION:          
 DESCRIPTION:       
 RETURNS:           
 NOTES:             
 ------------------------------------------------------------------------------- */
-
 int main(void)
 {
 	std::string city1, city2;
 	std::string Reno, San_Francisco, Salt_Lake_City, Seattle, Las_Vegas;
 	std::vector<std::string> cities = {"Reno", "San_Francisco", "Salt_Lake_City", "Seattle", "Las_Vegas"};
 	int miles;
+	int start = 0;
 
 	// Open up the file
 	std::fstream inFile;
@@ -60,31 +49,114 @@ int main(void)
 	}
 
 	
-	// Instantiate a Graph object named graphite
-	Graph graphite(5);
+	
+	/* Create adjacency_matrix */
+	//int adjacency_matrix[][VERTEX_AMOUNT] = { { 0, 218, 518, 704, 439 },
+	                                          //{ 218, 0, BIG_NUMBER, 808, 569},
+	                                          //{ 518, BIG_NUMBER, 0, 830, 421 },
+	                                          //{ 704, 808, 830, 0, BIG_NUMBER },
+	                                          //{ 439, 569, 421, BIG_NUMBER, 0 } };
 
+	int adjacency_matrix[][VERTEX_AMOUNT] = {0};
+	adjacency_matrix[1][2] = BIG_NUMBER;
+	adjacency_matrix[2][1] = BIG_NUMBER;
+	adjacency_matrix[3][4] = BIG_NUMBER;
+	adjacency_matrix[4][3] = BIG_NUMBER;
 
 	// Read in cities and miles and create edges
 	while (inFile >> city1)
 	{
 		inFile >> city2;
 		inFile >> miles;
-		addEdge(city1, city2, miles, graphite);
+		addEdge(city1, city2, miles, adjacency_matrix);
 	}
-
-
-	boost::array<int, 5> predecessors;
-
-	boost::dijkstra_shortest_paths(graphite, reno, boost::predecessor_map(predecessors.begin()));	
-
-
-
 
 
 
 	
+	int the_chosen_one = TSP( adjacency_matrix, start );
+	std::cout << the_chosen_one << " miles travelled" << std::endl;
+    std::cout << the_chosen_one / 40 << " gallons used" << std::endl;
+
+
+
+	
+	
+
+	
 
 	return 0;
+}
+
+/* -----------------------------------------------------------------------------
+FUNCTION:          addEdge()
+DESCRIPTION:       Creates edges and matrix
+RETURNS:           void
+NOTES:             
+------------------------------------------------------------------------------- */
+void addEdge(std::string city1, std::string city2, int miles, int adjacency_matrix[][VERTEX_AMOUNT])
+{
+
+	if ((city1 == cities[Reno]) && (city2 == cities[San_Francisco]))
+	{
+		adjacency_matrix[Reno][San_Francisco] = miles;
+		adjacency_matrix[San_Francisco][Reno] = miles;
+		
+	}
+
+	else if ((city1 == cities[Reno]) && (city2 == cities[Salt_Lake_City]))
+	{
+		adjacency_matrix[Reno][Salt_Lake_City] = miles;
+		adjacency_matrix[Salt_Lake_City][Reno] = miles;
+	}
+
+	else if ((city1 == cities[Reno]) && (city2 == cities[Seattle]))
+	{
+		adjacency_matrix[Reno][Seattle] = miles;
+		adjacency_matrix[Seattle][Reno] = miles;
+	}
+
+	else if ((city1 == cities[Reno]) && (city2 == cities[Las_Vegas]))
+	{
+		adjacency_matrix[Reno][Las_Vegas] = miles;
+		adjacency_matrix[Las_Vegas][Reno] = miles;
+	}
+
+	else if ((city1 == cities[San_Francisco]) && (city2 == cities[Seattle]))
+	{
+		adjacency_matrix[San_Francisco][Seattle] = miles;
+		adjacency_matrix[Seattle][San_Francisco] = miles;
+	}
+
+	else if ((city1 == cities[San_Francisco]) && (city2 == cities[Las_Vegas]))
+	{
+		adjacency_matrix[San_Francisco][Las_Vegas] = miles;
+		adjacency_matrix[Las_Vegas][San_Francisco] = miles;
+	}
+
+	else if ((city1 == cities[San_Francisco]) && (city2 == cities[Seattle]))
+	{
+		adjacency_matrix[San_Francisco][Seattle] = miles;
+		adjacency_matrix[Seattle][San_Francisco] = miles;
+	}
+	
+	else if ((city1 == cities[Salt_Lake_City]) && (city2 == cities[Las_Vegas]))
+	{
+		adjacency_matrix[Salt_Lake_City][Las_Vegas] = miles;
+		adjacency_matrix[Las_Vegas][Salt_Lake_City] = miles;
+	}
+
+	else if ((city1 == cities[Salt_Lake_City]) && (city2 == cities[Seattle]))
+	{
+		adjacency_matrix[Salt_Lake_City][Seattle] = miles;
+		adjacency_matrix[Seattle][Salt_Lake_City] = miles;
+	}
+
+	else
+	{
+		std::cout << std::endl;
+	}
+
 }
 
 /* -----------------------------------------------------------------------------
@@ -93,60 +165,79 @@ DESCRIPTION:
 RETURNS:           
 NOTES:             
 ------------------------------------------------------------------------------- */
-void addEdge(std::string city1, std::string city2, int miles, Graph& graphite)
-{
-	// std::string Reno, San_Francisco, Salt_Lake_City, Seattle, Las_Vegas;
+int TSP( int graph[][VERTEX_AMOUNT], int start )
+{	
 
-	if ((city1 == "Reno") && (city2 == "San_Francisco"))
-	{
-		// Add weight edges to graphite
-		// integers located in each line are the distances between the cities
-		boost::add_edge(reno, sf, miles, graphite);
-	}
-
-	else if ((city1 == "Reno") && (city2 == "Salt_Lake_City"))
-	{
-		boost::add_edge(reno, slc, miles, graphite);
-	}
-
-	else if ((city1 == "Reno") && (city2 == "Seattle"))
-	{
-		boost::add_edge(reno, sea, miles, graphite);
-	}
-
-	else if ((city1 == "Reno") && (city2 == "Las_Vegas"))
-	{
-		boost::add_edge(reno, lv, miles, graphite);
-	}
-
-	else if ((city1 == "San_Francisco") && (city2 == "Seattle"))
-	{
-		boost::add_edge(sf, sea, miles, graphite);
-	}
-
-	else if ((city1 == "San_Francisco") && (city2 == "Las_Vegas"))
-	{
-		boost::add_edge(sf, lv, miles, graphite);
-	}
-
-	else if ((city1 == "San_Francisco") && (city2 == "Seattle"))
-	{
-		boost::add_edge(slc, sea, miles, graphite);
-	}
-
-	else if ((city1 == "Salt_Lake_City") && (city2 == "Las_Vegas"))
-	{
-		boost::add_edge(slc, lv, miles, graphite);
-	}
-
-	else if ((city1 == "Salt_Lake_City") && (city2 == "Seattle"))
-	{
-		boost::add_edge(slc, sea, miles, graphite);
-	}
-
-	else
-	{
-		std::cout << std::endl;
-	}
+	std::string path[VERTEX_AMOUNT];
+	std::string path_best[VERTEX_AMOUNT];
+	std::vector<int> vertex;
 	
+	/* store vertexes except for the
+	 *first one, which represents Reno */
+	for( int n = 1; n != VERTEX_AMOUNT; n++ )
+	{
+		vertex.push_back(n);
+	}
+
+	int minimum_path = BIG_NUMBER;
+	std::cout << "Paths: " << std::endl;
+
+	do
+	{
+		/* store the amount of miles travelled */
+		int miles = 0; // start off at Reno
+		
+		// current path weight compute
+		// check to see if this works later
+		int k = start;
+		
+		for( long unsigned int n = 0; n < vertex.size(); n++ )
+		{
+			miles += graph[k][vertex[n]];
+			k = vertex[n];
+			path[n] = cities[k];
+		}
+		
+		miles += graph[k][start];
+		minimum_path = std::min(minimum_path, miles);
+		
+		if( miles < BIG_NUMBER )
+		{
+			std::cout << "Reno -> ";
+			
+			for ( int n = 0; n < 4; n++ )
+			{
+				std::cout << path[n] << " -> ";
+			}
+			
+			std::cout << "Reno";
+			
+			std::cout << ": " << miles << " miles" << std::endl;
+			
+			if (miles == minimum_path)
+			{
+				
+				for (int i = 0; i < 4; i++)
+				{
+					path_best[i] = path[i];
+				}
+				
+			}
+		}
+		
+	} while( std::next_permutation( vertex.begin(), vertex.end() ) ); // check every possible combination
+	
+	std::cout << std::endl;
+	
+	std::cout << "Shortest Path = Reno -> ";
+    for (int n = 0; n < 4; n++)
+	{
+		std::cout << path_best[n] << " -> ";
+	}
+	std::cout << "Reno" << std::endl;
+	
+
+
+	/* return minimum path */
+    return minimum_path;
 }
