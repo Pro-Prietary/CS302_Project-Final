@@ -26,7 +26,7 @@ std::string cities[5] = {"Reno","San_Francisco","Salt_Lake_City","Seattle","Las_
 
 // Prototypes
 void addEdge(const std::string city1, const std::string city2, const int miles, int adjacency_matrix[][VERTEX_AMOUNT]);
-int TSP( int graph[][VERTEX_AMOUNT], int start );
+int TSP(int graph[][VERTEX_AMOUNT], int start, std::fstream &outFile);
 
 /* -----------------------------------------------------------------------------
 FUNCTION:          
@@ -38,11 +38,11 @@ int main(void)
 {
 	std::string city1, city2;
 	std::string Reno, San_Francisco, Salt_Lake_City, Seattle, Las_Vegas;
-	//std::vector<std::string> cities = {"Reno", "San_Francisco", "Salt_Lake_City", "Seattle", "Las_Vegas"};
 	int miles;
 	int start = 0;
+	int milesPerGallon = 40;
 
-	// Open up the file
+	// Open up the file input operator
 	std::fstream inFile;
 	inFile.open("mileInput.txt", std::ios::in);
 	if (!inFile)
@@ -51,7 +51,10 @@ int main(void)
 		return 0;
 	}
 
-	
+	// Open up file output operator
+	std::fstream outFile;
+	outFile.open("TSP_Results.txt", std::ios::out);
+
 	
 	/* Create adjacency_matrix */
 	//int adjacency_matrix[][VERTEX_AMOUNT] = { { 0, 218, 518, 704, 439 },
@@ -74,16 +77,18 @@ int main(void)
 		addEdge(city1, city2, miles, adjacency_matrix);
 	}
 
+	// Go to TSP algorithm 
+	int the_chosen_one = TSP(adjacency_matrix, start, outFile);
 
+	// Output results to screen and file
+	std::cout << the_chosen_one << " miles travelled during shortest route." << std::endl;
+    std::cout << (the_chosen_one / milesPerGallon) << " gallons used during shortest route." << std::endl;
+	outFile << the_chosen_one << " miles travelled during shortest route." << std::endl;
+	outFile << (the_chosen_one / milesPerGallon) << " gallons used during shortest route." << std::endl; 
 
-	
-	int the_chosen_one = TSP( adjacency_matrix, start );
-	std::cout << the_chosen_one << " miles travelled" << std::endl;
-    std::cout << the_chosen_one / 40 << " gallons used" << std::endl;
-
-
-
+	// Close files
 	inFile.close();
+	outFile.close();
 	
 	
 
@@ -152,7 +157,7 @@ void addEdge(const std::string city1, const std::string city2, const int miles, 
 
 	else
 	{
-		std::cout << "Unable to Add edge" << std::endl;;
+		std::cout << "Unable to Add edge" << std::endl;
 	}
 
 }
@@ -163,7 +168,7 @@ DESCRIPTION:
 RETURNS:           
 NOTES:             
 ------------------------------------------------------------------------------- */
-int TSP( int graph[][VERTEX_AMOUNT], int start )
+int TSP(int graph[][VERTEX_AMOUNT], int start, std::fstream &outFile)
 {	
 
 	std::string path[VERTEX_AMOUNT];
@@ -179,6 +184,7 @@ int TSP( int graph[][VERTEX_AMOUNT], int start )
 
 	int minimum_path = BIG_NUMBER;
 	std::cout << "Paths: " << std::endl;
+	outFile << "Paths: " << std::endl;
 
 	do
 	{
@@ -202,15 +208,19 @@ int TSP( int graph[][VERTEX_AMOUNT], int start )
 		if( miles < BIG_NUMBER )
 		{
 			std::cout << "Reno -> ";
+			outFile << "Reno -> ";
 			
 			for ( int n = 0; n < 4; n++ )
 			{
 				std::cout << path[n] << " -> ";
+				outFile << path[n] << " -> ";
 			}
 			
 			std::cout << "Reno";
+			outFile << "Reno";
 			
 			std::cout << ": " << miles << " miles" << std::endl;
+			outFile << ": " << miles << " miles" << std::endl; 
 			
 			if (miles == minimum_path)
 			{
@@ -226,13 +236,17 @@ int TSP( int graph[][VERTEX_AMOUNT], int start )
 	} while( std::next_permutation( vertex.begin(), vertex.end() ) ); // check every possible combination
 	
 	std::cout << std::endl;
+	outFile << std::endl;
 	
 	std::cout << "Shortest Path = Reno -> ";
+	outFile << "Shortest Path = Reno -> ";
     for (int n = 0; n < 4; n++)
 	{
 		std::cout << path_best[n] << " -> ";
+		outFile << path_best[n] << " -> ";
 	}
 	std::cout << "Reno" << std::endl;
+	outFile << "Reno" << std::endl;
 	
 
 

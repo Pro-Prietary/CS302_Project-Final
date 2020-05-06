@@ -1,0 +1,13 @@
+Paths: 
+Reno -> San_Francisco -> Seattle -> Salt_Lake_City -> Las_Vegas -> Reno: 2716 miles
+Reno -> San_Francisco -> Las_Vegas -> Salt_Lake_City -> Seattle -> Reno: 2742 miles
+Reno -> Salt_Lake_City -> Seattle -> San_Francisco -> Las_Vegas -> Reno: 3164 miles
+Reno -> Salt_Lake_City -> Las_Vegas -> San_Francisco -> Seattle -> Reno: 3020 miles
+Reno -> Seattle -> San_Francisco -> Las_Vegas -> Salt_Lake_City -> Reno: 3020 miles
+Reno -> Seattle -> Salt_Lake_City -> Las_Vegas -> San_Francisco -> Reno: 2742 miles
+Reno -> Las_Vegas -> San_Francisco -> Seattle -> Salt_Lake_City -> Reno: 3164 miles
+Reno -> Las_Vegas -> Salt_Lake_City -> Seattle -> San_Francisco -> Reno: 2716 miles
+
+Shortest Path = Reno -> Las_Vegas -> Salt_Lake_City -> Seattle -> San_Francisco -> Reno
+2716 miles travelled during shortest route.
+67 gallons used during shortest route.
