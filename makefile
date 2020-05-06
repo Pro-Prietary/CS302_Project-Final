@@ -3,4 +3,4 @@ output: main.o
 main.o: source/main.cpp
 	g++ -ggdb -Wall -c source/main.cpp -std=c++11
 clean:
-	rm *.o output
+	rm *.o TSP_Results.txt output

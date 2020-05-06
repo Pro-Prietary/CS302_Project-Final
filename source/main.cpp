@@ -8,8 +8,8 @@ NOTES:
 MODIFICATION HISTORY:
 Author             	Date               Version
 ---------------    	----------         --------------
-Conner Fissell
-NJ Pelpinosas     	4/27/2020          1.0  Original version
+Conner Fissell          5/5/2020           1.0  Original Version
+NJ Pelpinosas     	5/5/2020           1.0  Original version
 ----------------------------------------------------------------------------- */
 #include <iostream>
 #include <fstream>
@@ -17,7 +17,7 @@ NJ Pelpinosas     	4/27/2020          1.0  Original version
 #include <string>
 #include <algorithm>
 
-// Global Variables
+// Global
 #define VERTEX_AMOUNT 5
 #define BIG_NUMBER 10000
 enum cities {Reno, San_Francisco, Salt_Lake_City, Seattle, Las_Vegas};
@@ -60,7 +60,7 @@ int main(void)
 	adjacency_matrix[3][4] = BIG_NUMBER;
 	adjacency_matrix[4][3] = BIG_NUMBER;
 
-	// Read in cities and miles and create edges
+	// Read in cities and miles from input file and create edges
 	while (inFile >> city1)
 	{
 		inFile >> city2;
@@ -73,24 +73,22 @@ int main(void)
 
 	// Output results to screen and file, convert total miles to gallons using MPG ratio
 	std::cout << the_chosen_one << " miles travelled during shortest path." << std::endl;
-    std::cout << (the_chosen_one / milesPerGallon) << " gallons used during shortest path." << std::endl;
+        std::cout << (the_chosen_one / milesPerGallon) << " gallons used during shortest path." << std::endl;
 	outFile << the_chosen_one << " miles travelled during shortest path." << std::endl;
 	outFile << (the_chosen_one / milesPerGallon) << " gallons used during shortest path." << std::endl; 
+
+	std::cout << std::endl << "Output to TSP_Results.txt" << std::endl;
 
 	// Close files
 	inFile.close();
 	outFile.close();
-	
-	
-
-	
 
 	return 0;
 }
 
 /* -----------------------------------------------------------------------------
 FUNCTION:          addEdge()
-DESCRIPTION:       Creates edges and matrix
+DESCRIPTION:       Creates edges
 RETURNS:           void
 NOTES:             
 ------------------------------------------------------------------------------- */
@@ -231,16 +229,16 @@ int TSP(int graph[][VERTEX_AMOUNT], int start, std::fstream &outFile)
 	
 	std::cout << "Shortest Path = Reno -> ";
 	outFile << "Shortest Path = Reno -> ";
-    for (int n = 0; n < 4; n++)
-	{
-		std::cout << path_best[n] << " -> ";
-		outFile << path_best[n] << " -> ";
-	}
+
+	    for (int n = 0; n < 4; n++)
+		{
+			std::cout << path_best[n] << " -> ";
+			outFile << path_best[n] << " -> ";
+		}
+
 	std::cout << "Reno" << std::endl;
 	outFile << "Reno" << std::endl;
 	
-
-
 	/* return minimum path */
-    return minimum_path;
+	return minimum_path;
 }
