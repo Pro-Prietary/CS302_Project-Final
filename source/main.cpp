@@ -1,5 +1,4 @@
 /* -----------------------------------------------------------------------------
- * ut
 FILE NAME: main.cpp
 DESCRIPTION: main driver
 USAGE: ./output
@@ -29,15 +28,14 @@ void addEdge(const std::string city1, const std::string city2, const int miles, 
 int TSP(int graph[][VERTEX_AMOUNT], int start, std::fstream &outFile);
 
 /* -----------------------------------------------------------------------------
-FUNCTION:          
-DESCRIPTION:       
-RETURNS:           
+FUNCTION:          Main()
+DESCRIPTION:       The main driver for the TSP program
+RETURNS:           0 
 NOTES:             
 ------------------------------------------------------------------------------- */
 int main(void)
 {
 	std::string city1, city2;
-	std::string Reno, San_Francisco, Salt_Lake_City, Seattle, Las_Vegas;
 	int miles;
 	int start = 0;
 	int milesPerGallon = 40;
@@ -55,7 +53,7 @@ int main(void)
 	std::fstream outFile;
 	outFile.open("TSP_Results.txt", std::ios::out);
 
-
+	// Create an adjacency matrix to house the weight data
 	int adjacency_matrix[VERTEX_AMOUNT][VERTEX_AMOUNT] = {0};
 	adjacency_matrix[1][2] = BIG_NUMBER;
 	adjacency_matrix[2][1] = BIG_NUMBER;
@@ -67,17 +65,17 @@ int main(void)
 	{
 		inFile >> city2;
 		inFile >> miles;
-		addEdge(city1, city2, miles, adjacency_matrix);
+		addEdge(city1, city2, miles, adjacency_matrix); // Puts the miles into the adjacency matrix
 	}
 
 	// Go to TSP algorithm 
 	int the_chosen_one = TSP(adjacency_matrix, start, outFile);
 
-	// Output results to screen and file
-	std::cout << the_chosen_one << " miles travelled during shortest route." << std::endl;
-    std::cout << (the_chosen_one / milesPerGallon) << " gallons used during shortest route." << std::endl;
-	outFile << the_chosen_one << " miles travelled during shortest route." << std::endl;
-	outFile << (the_chosen_one / milesPerGallon) << " gallons used during shortest route." << std::endl; 
+	// Output results to screen and file, convert total miles to gallons using MPG ratio
+	std::cout << the_chosen_one << " miles travelled during shortest path." << std::endl;
+    std::cout << (the_chosen_one / milesPerGallon) << " gallons used during shortest path." << std::endl;
+	outFile << the_chosen_one << " miles travelled during shortest path." << std::endl;
+	outFile << (the_chosen_one / milesPerGallon) << " gallons used during shortest path." << std::endl; 
 
 	// Close files
 	inFile.close();
@@ -156,9 +154,9 @@ void addEdge(const std::string city1, const std::string city2, const int miles, 
 }
 
 /* -----------------------------------------------------------------------------
-FUNCTION:          
-DESCRIPTION:       
-RETURNS:           
+FUNCTION:          TSP()
+DESCRIPTION:       Performs the algorithmic steps necessary to find the shortest path
+RETURNS:           minimum_path, the number of miles
 NOTES:             
 ------------------------------------------------------------------------------- */
 int TSP(int graph[][VERTEX_AMOUNT], int start, std::fstream &outFile)
