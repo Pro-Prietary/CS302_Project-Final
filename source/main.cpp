@@ -1,4 +1,5 @@
 /* -----------------------------------------------------------------------------
+ * ut
 FILE NAME: main.cpp
 DESCRIPTION: main driver
 USAGE: ./output
@@ -19,13 +20,14 @@ NJ Pelpinosas     	4/27/2020          1.0  Original version
 
 // Global Variables
 #define VERTEX_AMOUNT 5
-#define BIG_NUMBER 100000000
+#define BIG_NUMBER 10000
 enum cities {Reno, San_Francisco, Salt_Lake_City, Seattle, Las_Vegas};
-std::string cities[5] = {"Reno","San Francisco","Salt Lake City","Seattle","Las Vegas"};
+std::string cities[5] = {"Reno","San_Francisco","Salt_Lake_City","Seattle","Las_Vegas"};
 
 // Prototypes
-void addEdge(std::string city1, std::string city2, int miles, int adjacency_matrix[][VERTEX_AMOUNT]);
+void addEdge(const std::string city1, const std::string city2, const int miles, int adjacency_matrix[][VERTEX_AMOUNT]);
 int TSP( int graph[][VERTEX_AMOUNT], int start );
+
 /* -----------------------------------------------------------------------------
 FUNCTION:          
 DESCRIPTION:       
@@ -36,7 +38,7 @@ int main(void)
 {
 	std::string city1, city2;
 	std::string Reno, San_Francisco, Salt_Lake_City, Seattle, Las_Vegas;
-	std::vector<std::string> cities = {"Reno", "San_Francisco", "Salt_Lake_City", "Seattle", "Las_Vegas"};
+	//std::vector<std::string> cities = {"Reno", "San_Francisco", "Salt_Lake_City", "Seattle", "Las_Vegas"};
 	int miles;
 	int start = 0;
 
@@ -46,6 +48,7 @@ int main(void)
 	if (!inFile)
 	{
 		std::cout << "\nError Opening File.\n\n";
+		return 0;
 	}
 
 	
@@ -57,7 +60,7 @@ int main(void)
 	                                          //{ 704, 808, 830, 0, BIG_NUMBER },
 	                                          //{ 439, 569, 421, BIG_NUMBER, 0 } };
 
-	int adjacency_matrix[][VERTEX_AMOUNT] = {0};
+	int adjacency_matrix[VERTEX_AMOUNT][VERTEX_AMOUNT] = {0};
 	adjacency_matrix[1][2] = BIG_NUMBER;
 	adjacency_matrix[2][1] = BIG_NUMBER;
 	adjacency_matrix[3][4] = BIG_NUMBER;
@@ -80,6 +83,7 @@ int main(void)
 
 
 
+	inFile.close();
 	
 	
 
@@ -94,7 +98,7 @@ DESCRIPTION:       Creates edges and matrix
 RETURNS:           void
 NOTES:             
 ------------------------------------------------------------------------------- */
-void addEdge(std::string city1, std::string city2, int miles, int adjacency_matrix[][VERTEX_AMOUNT])
+void addEdge(const std::string city1, const std::string city2, const int miles, int adjacency_matrix[][VERTEX_AMOUNT])
 {
 
 	if ((city1 == cities[Reno]) && (city2 == cities[San_Francisco]))
@@ -127,34 +131,28 @@ void addEdge(std::string city1, std::string city2, int miles, int adjacency_matr
 		adjacency_matrix[San_Francisco][Seattle] = miles;
 		adjacency_matrix[Seattle][San_Francisco] = miles;
 	}
-
+	
 	else if ((city1 == cities[San_Francisco]) && (city2 == cities[Las_Vegas]))
 	{
 		adjacency_matrix[San_Francisco][Las_Vegas] = miles;
 		adjacency_matrix[Las_Vegas][San_Francisco] = miles;
 	}
-
-	else if ((city1 == cities[San_Francisco]) && (city2 == cities[Seattle]))
-	{
-		adjacency_matrix[San_Francisco][Seattle] = miles;
-		adjacency_matrix[Seattle][San_Francisco] = miles;
-	}
 	
-	else if ((city1 == cities[Salt_Lake_City]) && (city2 == cities[Las_Vegas]))
-	{
-		adjacency_matrix[Salt_Lake_City][Las_Vegas] = miles;
-		adjacency_matrix[Las_Vegas][Salt_Lake_City] = miles;
-	}
-
 	else if ((city1 == cities[Salt_Lake_City]) && (city2 == cities[Seattle]))
 	{
 		adjacency_matrix[Salt_Lake_City][Seattle] = miles;
 		adjacency_matrix[Seattle][Salt_Lake_City] = miles;
 	}
 
+	else if ((city1 == cities[Salt_Lake_City]) && (city2 == cities[Las_Vegas]))
+	{
+		adjacency_matrix[Salt_Lake_City][Las_Vegas] = miles;
+		adjacency_matrix[Las_Vegas][Salt_Lake_City] = miles;
+	}
+
 	else
 	{
-		std::cout << std::endl;
+		std::cout << "Unable to Add edge" << std::endl;;
 	}
 
 }
