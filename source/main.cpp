@@ -55,13 +55,6 @@ int main(void)
 	std::fstream outFile;
 	outFile.open("TSP_Results.txt", std::ios::out);
 
-	
-	/* Create adjacency_matrix */
-	//int adjacency_matrix[][VERTEX_AMOUNT] = { { 0, 218, 518, 704, 439 },
-	                                          //{ 218, 0, BIG_NUMBER, 808, 569},
-	                                          //{ 518, BIG_NUMBER, 0, 830, 421 },
-	                                          //{ 704, 808, 830, 0, BIG_NUMBER },
-	                                          //{ 439, 569, 421, BIG_NUMBER, 0 } };
 
 	int adjacency_matrix[VERTEX_AMOUNT][VERTEX_AMOUNT] = {0};
 	adjacency_matrix[1][2] = BIG_NUMBER;
